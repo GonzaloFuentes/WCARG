@@ -82,7 +82,6 @@ resultsAA.issues.forEach(element => {
 
 const resultsA = await pally ('https://www.eventbrite.com/',optionsA);
 
-console.log("TEST")
 resultsA.issues.forEach(element => {
 
         for (i = 0; i < wcag.length; i++) {

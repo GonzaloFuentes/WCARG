@@ -18,12 +18,7 @@ function esAccesible(results,seleccionados) {
 
 
         if(errorSplit.length > 0 ){
-            if(errorSplit[0] === "WCAG2AA"){
-                errorObject.nivel     = errorSplit[0].replace("WCAG2AA","Nivel: AA")
-            }
-            else{
-                errorObject.nivel     = errorSplit[0].replace("WCAG2A","Nivel: A ")
-            }
+            errorSplit[0] === "WCAG2AA"? errorObject.nivel     = errorSplit[0].replace("WCAG2AA","Nivel: AA"):errorObject.nivel     = errorSplit[0].replace("WCAG2A","Nivel: A ");
 
             errorObject.principio = errorSplit[1].replace("Principle","Principio: ");
             errorObject.guia      = errorSplit[2].replace("Guideline","Guia: ");
