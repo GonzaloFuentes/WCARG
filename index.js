@@ -1,5 +1,8 @@
 const pally = require('pa11y')
-const functionEsAccesible = require("./util/accesibilityUtil.js")
+const isAccesible = require("./util/accesibilityUtil.js")
+const wcag = require("./util/wcagArgentina")
+const errorMessages = require("./util/errorMessageUtil")
+
 
 const optionsAA = {
         standard: 'WCAG2AA',
@@ -27,72 +30,36 @@ const optionsA = {
 
 async function run() {
 
-let seleccionados = [];
-let wcag = [
-"WCAG2A.Principle1.Guideline1_1.1_1_1",
-"WCAG2A.Principle1.Guideline1_2.1_2_1",
-"WCAG2A.Principle1.Guideline1_2.1_2_2",
-"WCAG2A.Principle1.Guideline1_2.1_2_3",
-"WCAG2AA.Principle1.Guideline1_2.1_2_4",
-"WCAG2AA.Principle1.Guideline1_2.1_2_5",
-"WCAG2A.Principle1.Guideline1_3.1_3_1",
-"WCAG2A.Principle1.Guideline1_3.1_3_2",
-"WCAG2A.Principle1.Guideline1_3.1_3_3",
-"WCAG2A.Principle1.Guideline1_4.1_4_1",
-"WCAG2A.Principle1.Guideline1_4.1_4_2",
-"WCAG2AA.Principle1.Guideline1_4.1_4_3",
-"WCAG2AA.Principle1.Guideline1_4.1_4_4",
-"WCAG2AA.Principle1.Guideline1_4.1_4_5",
-"WCAG2A.Principle2.Guideline2_1.2_1_1",
-"WCAG2A.Principle2.Guideline2_1.2_1_2",
-"WCAG2A.Principle2.Guideline2_2.2_2_1",
-"WCAG2A.Principle2.Guideline2_2.2_2_2",
-"WCAG2A.Principle2.Guideline2_3.2_3_1",
-"WCAG2A.Principle2.Guideline2_4.2_4_1",
-"WCAG2A.Principle2.Guideline2_4.2_4_2",
-"WCAG2A.Principle2.Guideline2_4.2_4_3",
-"WCAG2A.Principle2.Guideline2_4.2_4_4",
-"WCAG2AA.Principle2.Guideline2_4.2_4_5",
-"WCAG2AA.Principle2.Guideline2_4.2_4_6",
-"WCAG2AA.Principle2.Guideline2_4.2_4_7",
-"WCAG2A.Principle3.Guideline3_1.3_1_1",
-"WCAG2AA.Principle3.Guideline3_1.3_1_2",
-"WCAG2A.Principle3.Guideline3_2.3_2_1",
-"WCAG2A.Principle3.Guideline3_2.3_2_2",
-"WCAG2AA.Principle3.Guideline3_2.3_2_3",
-"WCAG2AA.Principle3.Guideline3_2.3_2_4",
-"WCAG2A.Principle3.Guideline3_3.3_3_1",
-"WCAG2A.Principle3.Guideline3_3.3_3_2",
-"WCAG2AA.Principle3.Guideline3_3.3_3_3",
-"WCAG2AA.Principle3.Guideline3_3.3_3_4",
-"WCAG2A.Principle4.Guideline4_1.4_1_1",
-"WCAG2A.Principle4.Guideline4_1.4_1_2"];
+let selectedErrors = [];
+let mapOfErrors = new Map();
+let mapOfErrorMessages = new Map();
 
 
 const resultsAA = await pally ('https://www.eventbrite.com/',optionsAA);
-
-resultsAA.issues.forEach(element => {
-
-        for (i = 0; i < wcag.length; i++) {
-                if (element.code.substring(0,37).includes(wcag[i])) {
-                        seleccionados.push(wcag[i]);
-                }            
-        } 
-});
-
 const resultsA = await pally ('https://www.eventbrite.com/',optionsA);
 
-resultsA.issues.forEach(element => {
-
-        for (i = 0; i < wcag.length; i++) {
-                if (element.code.substring(0,37).includes(wcag[i])) {    
-                        // si lo incluye agregalo al array de los seleccionados
-                        seleccionados.push(wcag[i]);
-                }            
-        } 
+resultsAA.issues.forEach(element => {
+        let code = element.code.substring(0,37);
+        let wcagCode = wcag.containsWcag(code)
+        if (wcagCode){
+                selectedErrors.push(element.code);
+                mapOfErrorMessages.set(element.code,errorMessages.getErrorMessageByErrorCode(element.code));
+        }
 });
 
-functionEsAccesible.esAccesible(resultsAA,seleccionados);
+resultsA.issues.forEach(element => {
+        let code = element.code.substring(0,36);
+        let wcagCode = wcag.containsWcag(code);
+        if ( wcagCode){
+                selectedErrors.push(element.code);
+                mapOfErrorMessages.set(element.code,errorMessages.getErrorMessageByErrorCode(element.code));
+        }
+});
+
+let pageUrl  = resultsAA.pageUrl;
+console.log(pageUrl)
+
+isAccesible.isAccesible(pageUrl,selectedErrors,mapOfErrorMessages);
 
 }
 
