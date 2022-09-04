@@ -1,5 +1,5 @@
 const pally = require('pa11y')
-const functionEsAccesible = require("./util/accesibilidad.js")
+const functionEsAccesible = require("./util/accesibilityUtil.js")
 
 const optionsAA = {
         standard: 'WCAG2AA',

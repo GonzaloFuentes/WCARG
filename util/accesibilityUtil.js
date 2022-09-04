@@ -1,18 +1,18 @@
 'use strict';
 
 
-function esAccesible(results,seleccionados) {
-    //console.log("Cantidad repetidas  " + seleccionados)
+function isAccesible(results,selected) {
+    //console.log("Cantidad repetidas  " + selected)
 
-    let resultado = seleccionados.filter((item,index)=>{
-    return seleccionados.indexOf(item) === index;
+    let result = selected.filter((item,index)=>{
+    return selected.indexOf(item) === index;
     })
 
     console.log("Los errores de accesibilidad encontrados son:  ")
 
-    for (i = 0; i < resultado.length; i++) {
+    for (let i = 0; i < result.length; i++) {
 
-        let error = resultado[i];
+        let error = result[i];
         let errorSplit = error.split(".");
         let errorObject = {};
 
@@ -27,7 +27,7 @@ function esAccesible(results,seleccionados) {
         console.log(errorObject.nivel  + " "+ errorObject.principio  + " "+ errorObject.guia  + " "+ errorObject.criterio );
     } 
 
-    if (resultado.length > 8){
+    if (result.length > 8){
             console.log(results.pageUrl + " NO ES ACCESIBLE")
     }
     else {
@@ -39,5 +39,5 @@ function esAccesible(results,seleccionados) {
 
 
 module.exports = {
-        "esAccesible":esAccesible
+        "esAccesible":isAccesible
 }    

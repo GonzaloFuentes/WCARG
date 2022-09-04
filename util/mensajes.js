@@ -1,5 +1,0 @@
-class Mensajes{
-
-}
-
-export {Mensajes}
